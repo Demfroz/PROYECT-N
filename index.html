@@ -139,6 +139,21 @@ body.glitch .wrap{animation:shake .5s steps(6) 2}
 @keyframes eq{from{height:6px}to{height:30px}}
 .cta{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font:900 1.05rem var(--body);color:var(--ink);background:var(--pink);
   padding:15px 26px;border-radius:999px;box-shadow:0 8px 24px rgba(255,79,163,.55)}
+.player{width:100%;border-radius:14px;overflow:hidden;min-height:352px;background:#121212;
+  box-shadow:0 0 0 2px rgba(255,79,163,.55),0 10px 40px rgba(255,79,163,.35)}
+.player iframe{display:block;width:100%;border:0}
+.hint{font-size:.85rem;opacity:.85}
+.hint a{color:var(--pink);font-weight:900}
+.panel.parked{position:absolute;left:-300vw;top:0;width:100%;visibility:hidden}
+.sheet{overflow-x:hidden}
+.sheet.off{visibility:hidden}
+.nowplaying{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:29;display:flex;align-items:center;gap:8px;border:0;cursor:pointer;
+  background:var(--pink);color:var(--ink);font:900 .85rem var(--body);padding:10px 16px;border-radius:999px;box-shadow:0 8px 24px rgba(255,79,163,.55);
+  transform:translateY(180%);transition:transform .4s cubic-bezier(.3,1.5,.5,1)}
+.nowplaying.show{transform:none}
+.nowplaying .eq{height:14px;gap:3px}
+.nowplaying .eq i{width:3px;background:var(--ink);animation-name:eq2}
+@keyframes eq2{from{height:3px}to{height:14px}}
 .cta .play{width:0;height:0;border-left:12px solid var(--ink);border-block:8px solid transparent}
 
 /* 2 fotos */
@@ -166,6 +181,17 @@ body.glitch .wrap{animation:shake .5s steps(6) 2}
 .bubble{font-family:var(--hand);font-size:1.6rem;background:var(--cream);color:var(--ink);padding:8px 18px;border-radius:20px;position:relative}
 .bubble::after{content:"";position:absolute;left:50%;bottom:-10px;transform:translateX(-50%);border:10px solid transparent;border-bottom:0;border-top-color:var(--cream)}
 
+/* imágenes de los personajes */
+.floaty img,.hero-mascot img,.mini img,.laugh img,.pup img,.slot .mini2 img{width:100%;height:100%;object-fit:contain;display:block}
+.floaty{opacity:.9}
+.f1{width:78px;height:78px}.f2{width:58px;height:66px}.f3{width:70px;height:78px}.f4{width:54px;height:54px}
+.hero-mascot{width:180px;height:180px;filter:drop-shadow(0 0 26px rgba(255,79,163,.65))}
+.mini{width:58px;height:58px;bottom:8px;right:8px}
+.trick .laugh{width:210px;height:210px}
+.slot .mini2{width:46px;height:46px;opacity:.85}
+.melody{width:120px;height:auto;animation:bob 4s ease-in-out infinite;filter:drop-shadow(0 0 16px rgba(255,79,163,.6))}
+.pup{width:min(300px,80vw);height:auto;aspect-ratio:10/9;filter:drop-shadow(0 0 30px rgba(255,211,77,.45))}
+.msg{font-size:clamp(1.8rem,8.5vw,2.5rem);max-width:13ch}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .poem span{opacity:1;transform:none}
@@ -210,70 +236,71 @@ body.glitch .wrap{animation:shake .5s steps(6) 2}
 
 <canvas id="fx" aria-hidden="true"></canvas>
 <div class="bgglow" aria-hidden="true"></div>
-<div class="floaty f1" aria-hidden="true"><svg><use href="#moni"/></svg></div>
-<div class="floaty f2" aria-hidden="true"><svg><use href="#moni"/></svg></div>
-<div class="floaty f3" aria-hidden="true"><svg><use href="#moni"/></svg></div>
-<div class="floaty f4" aria-hidden="true"><svg><use href="#moni"/></svg></div>
-<div class="floaty f5" aria-hidden="true"><svg><use href="#moni"/></svg></div>
+<div class="floaty f1" aria-hidden="true"><img src="img/kuromi-cola.png" alt=""></div>
+<div class="floaty f2" aria-hidden="true"><img src="img/my-melody.png" alt=""></div>
+<div class="floaty f3" aria-hidden="true"><img src="img/kuromi-bruja.png" alt=""></div>
+<div class="floaty f4" aria-hidden="true"><img src="img/kuromi-enamorada.png" alt=""></div>
 
 <main class="wrap">
   <header class="hero">
     <span class="eyebrow">Una sorpresa para Harold</span>
-    <div class="hero-mascot" aria-hidden="true"><svg><use href="#moni"/></svg></div>
+    <div class="hero-mascot" aria-hidden="true"><img src="img/kuromi-timida.png" alt=""></div>
     <h1 id="titulo">Elige cualquiera</h1>
     <p class="sub" id="sub">Hay 4 fichitas. Toca la que tú quieras.</p>
   </header>
 
   <section class="grid" id="grid" aria-label="Fichas">
-    <button class="ficha" data-c="0" id="f0"><span class="face"><span class="num">?</span><span class="lbl">Ficha rosa</span><span class="mini"><svg><use href="#moni"/></svg></span></span></button>
-    <button class="ficha" data-c="1" id="f1"><span class="face"><span class="num">?</span><span class="lbl">Ficha negra</span><span class="mini"><svg><use href="#moni"/></svg></span></span></button>
-    <button class="ficha" data-c="2" id="f2"><span class="face"><span class="num">?</span><span class="lbl">Ficha lila</span><span class="mini"><svg><use href="#moni"/></svg></span></span></button>
-    <button class="ficha" data-c="3" id="f3"><span class="face"><span class="num">?</span><span class="lbl">Ficha chicle</span><span class="mini"><svg><use href="#moni"/></svg></span></span></button>
+    <button class="ficha" data-c="0" id="f0"><span class="face"><span class="num">?</span><span class="lbl">Ficha rosa</span><span class="mini"><img src="img/kuromi-enamorada.png" alt=""></span></span></button>
+    <button class="ficha" data-c="1" id="f1"><span class="face"><span class="num">?</span><span class="lbl">Ficha negra</span><span class="mini"><img src="img/kuromi-cola.png" alt=""></span></span></button>
+    <button class="ficha" data-c="2" id="f2"><span class="face"><span class="num">?</span><span class="lbl">Ficha lila</span><span class="mini"><img src="img/kuromi-bruja.png" alt=""></span></span></button>
+    <button class="ficha" data-c="3" id="f3"><span class="face"><span class="num">?</span><span class="lbl">Ficha chicle</span><span class="mini"><img src="img/my-melody.png" alt=""></span></span></button>
   </section>
 
   <p class="foot">hecho con mucho cariño</p>
 </main>
 
 <div class="trick" id="trick" aria-live="assertive">
-  <div class="laugh" aria-hidden="true"><svg><use href="#moni"/></svg></div>
+  <div class="laugh" aria-hidden="true"><img src="img/kuromi-cola.png" alt=""></div>
   <div class="big">¡JAJA NO!</div>
   <div class="small">¿creíste que ibas a elegir?</div>
 </div>
 
 <div class="toast" id="toast" role="status"></div>
+<button class="nowplaying" id="np" aria-label="Volver a la playlist"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Sonando</button>
 <div class="scrim" id="scrim" hidden></div>
-<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
+<div class="sheet off" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
   <div class="grab"></div>
-  <div id="sheetBody"></div>
+  <div id="sheetBody">
+    <div class="panel parked" id="p0">
+      <h2 id="st0">Nuestra playlist</h2>
+      <div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="player"><div id="spotify"></div></div>
+      <p>Ponte audífonos y deja que suene. Las siguientes fichas se disfrutan mejor con música.</p>
+      <p class="hint">¿No suena? Toca ▶ en el reproductor o <a href="https://open.spotify.com/playlist/6Mp2yGV2gbuQFnoLXF9wep" target="_blank" rel="noopener">ábrela en Spotify</a></p>
+      <button class="close" data-close>Listo, siguiente</button>
+    </div>
+    <div id="dyn"></div>
+  </div>
 </div>
 
-<template id="t0">
-  <div class="panel">
-    <h2 id="sheetTitle">Nuestra playlist</h2>
-    <div class="vinyl"><div class="label"><svg><use href="#moni"/></svg></div></div>
-    <div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-    <p>Ponte audífonos, abre la playlist y dale play. Las siguientes fichas se disfrutan mejor con música.</p>
-    <a class="cta" href="https://open.spotify.com/playlist/6Mp2yGV2gbuQFnoLXF9wep" target="_blank" rel="noopener"><span class="play"></span>Abrir en Spotify</a>
-    <button class="close" data-close>Listo, siguiente</button>
-  </div>
-</template>
 <template id="t1">
   <div class="panel">
     <h2 id="sheetTitle">Nuestras fotos</h2>
     <p>Momentos guardados para ti.</p>
     <div class="fotos">
-      <div class="slot"><span class="mini2"><svg><use href="#moni"/></svg></span>Foto 1</div>
-      <div class="slot" style="animation-delay:.08s"><span class="mini2"><svg><use href="#moni"/></svg></span>Foto 2</div>
-      <div class="slot" style="animation-delay:.16s"><span class="mini2"><svg><use href="#moni"/></svg></span>Foto 3</div>
-      <div class="slot" style="animation-delay:.24s"><span class="mini2"><svg><use href="#moni"/></svg></span>Foto 4</div>
-      <div class="slot" style="animation-delay:.32s"><span class="mini2"><svg><use href="#moni"/></svg></span>Foto 5</div>
-      <div class="slot" style="animation-delay:.4s"><span class="mini2"><svg><use href="#moni"/></svg></span>Foto 6</div>
+      <div class="slot"><span class="mini2"><img src="img/kuromi-enamorada.png" alt=""></span>Foto 1</div>
+      <div class="slot" style="animation-delay:.08s"><span class="mini2"><img src="img/kuromi-enamorada.png" alt=""></span>Foto 2</div>
+      <div class="slot" style="animation-delay:.16s"><span class="mini2"><img src="img/kuromi-enamorada.png" alt=""></span>Foto 3</div>
+      <div class="slot" style="animation-delay:.24s"><span class="mini2"><img src="img/kuromi-enamorada.png" alt=""></span>Foto 4</div>
+      <div class="slot" style="animation-delay:.32s"><span class="mini2"><img src="img/kuromi-enamorada.png" alt=""></span>Foto 5</div>
+      <div class="slot" style="animation-delay:.4s"><span class="mini2"><img src="img/kuromi-enamorada.png" alt=""></span>Foto 6</div>
     </div>
     <button class="close" data-close>Listo, siguiente</button>
   </div>
 </template>
 <template id="t2">
   <div class="panel">
+    <img class="melody" src="img/my-melody.png" alt="">
     <h2 id="sheetTitle">Un poema para ti</h2>
     <div class="poem">
       <span>Si el mundo se apaga en negro,</span>
@@ -298,8 +325,8 @@ body.glitch .wrap{animation:shake .5s steps(6) 2}
 <template id="t3">
   <div class="panel">
     <div class="bubble">¡Tú puedes!</div>
-    <div class="pup" aria-hidden="true"><svg><use href="#pup"/></svg></div>
-    <h2 id="sheetTitle" class="msg">Ya Harold, desarróllate</h2>
+    <div class="pup" aria-hidden="true"><img src="img/pompurin.png" alt=""></div>
+    <h2 id="sheetTitle" class="msg">Bueno, aquí le toca a Harold desarrollarse</h2>
     <button class="close" data-close>Cerrar</button>
   </div>
 </template>
@@ -381,27 +408,45 @@ body.glitch .wrap{animation:shake .5s steps(6) 2}
 
   /* ---------- hoja inferior ---------- */
   const sheet=document.getElementById('sheet'), scrim=document.getElementById('scrim'), body=document.getElementById('sheetBody');
+  const p0=document.getElementById('p0'), dyn=document.getElementById('dyn'), np=document.getElementById('np');
+
+  /* ---------- Spotify: reproductor que arranca al abrir la ficha 1 ---------- */
+  let ctrl=null, ready=false, wantPlay=false, playing=false;
+  function playMusic(){ if(playing) return; if(ctrl&&ready) ctrl.play(); else wantPlay=true; }
+  window.onSpotifyIframeApiReady=function(API){
+    API.createController(document.getElementById('spotify'),
+      {uri:'spotify:playlist:6Mp2yGV2gbuQFnoLXF9wep',width:'100%',height:352},
+      function(c){
+        ctrl=c;
+        c.addListener('ready',()=>{ready=true; if(wantPlay) c.play();});
+        c.addListener('playback_update',e=>{playing=!e.data.isPaused; np.classList.toggle('show',playing);});
+      });
+  };
+  np.addEventListener('click',()=>{ if(sheet.classList.contains('off')) open(0); });
   function open(i){
     current=i;
-    body.innerHTML=''; body.appendChild(document.getElementById('t'+i).content.cloneNode(true));
+    dyn.innerHTML='';
+    if(i===0){p0.classList.remove('parked');sheet.setAttribute('aria-labelledby','st0');playMusic()}
+    else{p0.classList.add('parked');dyn.appendChild(document.getElementById('t'+i).content.cloneNode(true));sheet.setAttribute('aria-labelledby','sheetTitle')}
     body.querySelectorAll('.poem span').forEach((s,k)=>s.style.animationDelay=(.3+k*.28)+'s');
-    sheet.hidden=false; scrim.hidden=false;
+    sheet.classList.remove('off'); scrim.hidden=false;
     requestAnimationFrame(()=>{sheet.classList.add('on');scrim.classList.add('on')});
     sheet.scrollTop=0;
     const [x,y]=center(cards[i]); burst(x,y,i===3?120:50);
     if(i===3){setTimeout(()=>burst(W*.2,H*.55,60),400);setTimeout(()=>burst(W*.8,H*.55,60),700)}
-    setTimeout(()=>{const b=body.querySelector('[data-close]');b&&b.focus({preventScroll:true})},500);
+    setTimeout(()=>{const b=(i===0?p0:dyn).querySelector('[data-close]');b&&b.focus({preventScroll:true})},500);
   }
   function close(){
     sheet.classList.remove('on');scrim.classList.remove('on');
-    setTimeout(()=>{sheet.hidden=true;scrim.hidden=true},450);
+    setTimeout(()=>{sheet.classList.add('off');scrim.hidden=true},450);
     if(current>-1){done.add(current); if(current===step) step++; mark(); if(step<4){const [x,y]=center(cards[step]);setTimeout(()=>burst(x,y,30),450)} cards[Math.min(step,3)].focus({preventScroll:true})}
     current=-1;
   }
   sheet.addEventListener('click',e=>{if(e.target.closest('[data-close]'))close()});
   scrim.addEventListener('click',close);
-  addEventListener('keydown',e=>{if(e.key==='Escape'&&!sheet.hidden)close()});
+  addEventListener('keydown',e=>{if(e.key==='Escape'&&!sheet.classList.contains('off'))close()});
 })();
 </script>
+<script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
 
 </body></html>
