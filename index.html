@@ -94,7 +94,7 @@ h1{font-family:var(--display);font-weight:400;margin:0;font-size:clamp(2.1rem,10
 /* trick overlay */
 .trick{position:fixed;inset:0;z-index:40;display:grid;place-items:center;align-content:center;gap:14px;text-align:center;padding:24px;
   background:radial-gradient(circle at 50% 45%,rgba(255,45,138,.55),rgba(11,6,9,.92) 70%);opacity:0;pointer-events:none;transition:opacity .25s}
-.trick.on{opacity:1}
+.trick.on{opacity:1;pointer-events:auto;cursor:pointer}
 .trick .big{font-family:var(--display);font-size:clamp(2.6rem,13vw,4.4rem);max-width:7ch;text-wrap:balance;line-height:1;color:var(--cream);
   text-shadow:3px 0 var(--pink),-3px 0 var(--lilac);transform:scale(.2) rotate(-12deg)}
 .trick.on .big{animation:stamp .6s cubic-bezier(.2,1.6,.4,1) forwards, rgb .18s steps(2) .6s 6}
@@ -275,7 +275,6 @@ body.glitch .wrap{animation:shake .5s steps(6) 2}
   <div class="grab"></div>
   <div id="sheetBody">
     <div class="panel parked" id="p0">
-      <h2 id="st0">Nuestra playlist</h2>
       <div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
       <div class="player"><div id="spotify"></div></div>
       <p class="nota">Para mí, para ti, esto es lo que suena cuando estoy contigo.</p>
@@ -402,13 +401,17 @@ body.glitch .wrap{animation:shake .5s steps(6) 2}
     document.body.classList.add('glitch');
     const tr=document.getElementById('trick'); tr.classList.add('on');
     setTimeout(()=>{burst(W/2,H*.4,90)},500);
-    setTimeout(()=>{
+    let ended=false;
+    const end=()=>{
+      if(ended) return; ended=true; clearTimeout(timer); tr.removeEventListener('click',end);
       tr.classList.remove('on'); document.body.classList.remove('glitch');
       titulo.textContent='Era broma, anda en orden jiji';
       sub.textContent='Empieza por la ficha 1 y ve una por una.';
       cards.forEach((c,k)=>setTimeout(()=>{c.classList.add('flip');setTimeout(()=>{if(k===0)setOrderLabels()},350)},k*120));
       setTimeout(()=>{cards.forEach(c=>c.classList.remove('flip'));const [a,b]=center(cards[0]);burst(a,b,40);phase='order';busy=false},1300);
-    },reduce?4500:5600);
+    };
+    const timer=setTimeout(end,reduce?4500:5600);
+    setTimeout(()=>tr.addEventListener('click',end),300);
   }
 
   cards.forEach((c,i)=>c.addEventListener('click',()=>{
@@ -442,8 +445,8 @@ body.glitch .wrap{animation:shake .5s steps(6) 2}
   function open(i){
     current=i;
     dyn.innerHTML='';
-    if(i===0){p0.classList.remove('parked');sheet.setAttribute('aria-labelledby','st0');playMusic()}
-    else{p0.classList.add('parked');dyn.appendChild(document.getElementById('t'+i).content.cloneNode(true));sheet.setAttribute('aria-labelledby','sheetTitle')}
+    if(i===0){p0.classList.remove('parked');sheet.removeAttribute('aria-labelledby');sheet.setAttribute('aria-label','Playlist');playMusic()}
+    else{p0.classList.add('parked');dyn.appendChild(document.getElementById('t'+i).content.cloneNode(true));sheet.removeAttribute('aria-label');sheet.setAttribute('aria-labelledby','sheetTitle')}
     body.querySelectorAll('.poem span').forEach((s,k)=>s.style.animationDelay=(.3+k*.22)+'s');
     sheet.classList.remove('off'); scrim.hidden=false;
     requestAnimationFrame(()=>{sheet.classList.add('on');scrim.classList.add('on')});
